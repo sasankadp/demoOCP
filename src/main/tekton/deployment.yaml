@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demoocp
+  # Name of the Deployment (manages ReplicaSets → Pods)
+spec:
+  replicas: 1
+  # How many pods you want running
+
+  selector:
+    matchLabels:
+      app: demoocp
+      # Deployment manages pods with this label
+
+  template:
+    metadata:
+      labels:
+        app: demoocp
+        # The pod label that matches the selector above
+
+    spec:
+      containers:
+        - name: demoocp
+          # Container name inside the pod
+
+          image: image-registry.openshift-image-registry.svc:5000/imsasa14-dev/demoocp:latest
+          # IMPORTANT:
+          # This pulls from OpenShift internal registry (cluster-local).
+          # Format: image-registry.../<namespace>/<imagestream>:<tag>
+
+          imagePullPolicy: Always
+          # Always pull latest tag when pod starts (good for dev)
+
+          ports:
+            - containerPort: 8080
+              # Port your Spring Boot app listens on inside the container
+
+          # -------------------------
+          # Readiness probe:
+          # "Can I send traffic to this pod?"
+          # -------------------------
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              # Spring Boot actuator readiness endpoint
+              port: 8080
+            initialDelaySeconds: 20
+            # Wait 20s before checking
+            periodSeconds: 10
+            # Check every 10s
+            timeoutSeconds: 2
+            # Fail if response takes >2s
+            failureThreshold: 6
+            # Mark not-ready after 6 failures (~1 minute)
+
+          # -------------------------
+          # Liveness probe:
+          # "Is the process alive or stuck?"
+          # -------------------------
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              # Spring Boot actuator liveness endpoint
+              port: 8080
+            initialDelaySeconds: 40
+            # Wait longer before liveness checks start
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 6

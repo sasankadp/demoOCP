@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: demoocp
+  # Route name
+spec:
+  to:
+    kind: Service
+    name: demoocp
+    # Route forwards to this Service
+  port:
+    targetPort: http
+    # This must match the Service port name ("http")

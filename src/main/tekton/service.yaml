@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: demoocp
+  # Service name (stable internal DNS name)
+spec:
+  selector:
+    app: demoocp
+    # This must match the pod label in Deployment
+  ports:
+    - name: http
+      # Port name (optional but good practice)
+      port: 80
+      # Service port (inside cluster)
+      targetPort: 8080
+      # Container port the service forwards to

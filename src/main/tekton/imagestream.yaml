@@ -1,0 +1,6 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: demoocp
+  # This name becomes the image name inside OpenShift:
+  # demoocp:latest

@@ -1,0 +1,36 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: demoocp-docker-build
+  # BuildConfig name (this is the "build job" object you start/run)
+spec:
+  runPolicy: Serial
+  # If multiple builds are triggered, run one at a time (safe default)
+
+  source:
+    type: Git
+    # Source is coming from a Git repo
+    git:
+      uri: https://github.com/sasankadp/demoOCP.git
+      # Your repo URL
+      ref: feature/dev
+      # Branch to build from
+    contextDir: .
+    # Repo subfolder to build from; "." means repo root
+
+  strategy:
+    type: Docker
+    # Use Dockerfile-based build (not S2I)
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+      # Path to Dockerfile relative to contextDir
+
+  output:
+    to:
+      kind: ImageStreamTag
+      name: demoocp:latest
+      # Push the built image into the ImageStream we created (demoocp)
+
+  triggers: []
+  # Keep triggers empty for now (manual build first).
+  # Later we can add webhook triggers for true "push → build".
