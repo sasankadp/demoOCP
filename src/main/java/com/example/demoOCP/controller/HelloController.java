@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
     @GetMapping("/hello")
     public String Hello(){
-        return "Hello returned with automation deployment testing1";
+        return "Hello returned with automation deployment testing2";
     }
 }
